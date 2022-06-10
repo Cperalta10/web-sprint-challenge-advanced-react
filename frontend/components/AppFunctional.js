@@ -1,28 +1,66 @@
-import React from 'react'
+import React, { useState } from "react";
 
 // Suggested initial states
-const initialMessage = ''
-const initialEmail = ''
-const initialSteps = 0
-const initialIndex = 4 // the index the "B" is at
+const initialMessage = "";
+const initialEmail = "";
+const initialSteps = 1;
+const initialIndex = 2; // the index the "B" is at
 
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
+  const [initialMessage, setInitialMessage] = useState(initialMessage);
+  const [initialEmail, setInitialEmail] = useState(initialEmail);
+  const [initialSteps, setInitialSteps] = useState(initialSteps);
+  const [initialIndex, setInitialIndex] = useState(initialIndex);
 
-  function getXY() {
+  function getXY(index) {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
+    switch (index) {
+      case 0:
+        return "(1,1)";
+        break;
+      case 1:
+        return "(2,1)";
+        break;
+      case 2:
+        return "(3,1)";
+        break;
+      case 3:
+        return "(1,2)";
+        break;
+      case 4:
+        return "(2,2)";
+        break;
+      case 5:
+        return "(3,2)";
+        break;
+      case 6:
+        return "(1,3)";
+        break;
+      case 7:
+        return "(2,3)";
+        break;
+      case 8:
+        return "(3,3)";
+        break;
+    }
   }
 
   function getXYMessage() {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
+    return getXY(initialIndex);
   }
 
   function reset() {
     // Use this helper to reset all states to their initial values.
+    setInitialEmail(initialEmail);
+    setInitialIndex(initialIndex);
+    setInitialMessage(initialMessage);
+    setInitialSteps(initialSteps);
   }
 
   function getNextIndex(direction) {
@@ -51,13 +89,14 @@ export default function AppFunctional(props) {
         <h3 id="steps">You moved 0 times</h3>
       </div>
       <div id="grid">
-        {
-          [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => (
-            <div key={idx} className={`square${idx === 4 ? ' active' : ''}`}>
-              {idx === 4 ? 'B' : null}
-            </div>
-          ))
-        }
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+          <div
+            key={idx}
+            className={`square${idx === initialIndex ? " active" : ""}`}
+          >
+            {idx === initialIndex ? "B" : null}
+          </div>
+        ))}
       </div>
       <div className="info">
         <h3 id="message"></h3>
@@ -74,5 +113,5 @@ export default function AppFunctional(props) {
         <input id="submit" type="submit"></input>
       </form>
     </div>
-  )
+  );
 }
