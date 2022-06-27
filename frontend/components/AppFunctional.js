@@ -28,31 +28,31 @@ export default function AppFunctional(props) {
     // It's enough to know what index the "B" is at, to be able to calculate them.
     switch (index) {
       case 0:
-        return "(1,1)";
+        return "(1, 1)";
         break;
       case 1:
-        return "(2,1)";
+        return "(2, 1)";
         break;
       case 2:
-        return "(3,1)";
+        return "(3, 1)";
         break;
       case 3:
-        return "(1,2)";
+        return "(1, 2)";
         break;
       case 4:
-        return "(2,2)";
+        return "(2, 2)";
         break;
       case 5:
-        return "(3,2)";
+        return "(3, 2)";
         break;
       case 6:
-        return "(1,3)";
+        return "(1, 3)";
         break;
       case 7:
-        return "(2,3)";
+        return "(2, 3)";
         break;
       case 8:
-        return "(3,3)";
+        return "(3, 3)";
         break;
     }
   }
@@ -79,7 +79,9 @@ export default function AppFunctional(props) {
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
     if (direction === "left") {
-      if (state.index - 1 >= 0) {
+      if (state.index === 3 || state.index === 6) {
+        setState({ ...state, message: "You can't go left" });
+      } else if (state.index - 1 >= 0) {
         setState({
           ...state,
           index: state.index - 1,
@@ -89,7 +91,9 @@ export default function AppFunctional(props) {
         setState({ ...state, message: "You can't go left" });
       }
     } else if (direction === "right") {
-      if (state.index + 1 <= 8) {
+      if (state.index === 2 || state.index === 5) {
+        setState({ ...state, message: "You can't go right" });
+      } else if (state.index + 1 <= 8) {
         setState({
           ...state,
           index: state.index + 1,
@@ -142,16 +146,23 @@ export default function AppFunctional(props) {
     evt.preventDefault();
     axios
       .post(url, {
-        x: `${getXYCord[1]}`,
-        y: `${getXYCord[3]}`,
+        x: `${Number(getXYCord[1])}`,
+        y: `${Number(getXYCord[4])}`,
         steps: `${state.steps}`,
         email: `${state.email}`,
       })
       .then((res) => {
-        console.log(res.data.message);
         setState({
           ...state,
           message: res.data.message,
+          email: "",
+        });
+      })
+      .catch((err) => {
+        setState({
+          ...state,
+          message: err.response.data.message,
+          email: "",
         });
       });
   };
@@ -160,7 +171,9 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates {getXYMessage()}</h3>
-        <h3 id="steps">You moved {state.steps} times</h3>
+        <h3 id="steps">
+          You moved {state.steps} time{state.steps === 1 ? "" : "s"}
+        </h3>
       </div>
       <div id="grid">
         {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (

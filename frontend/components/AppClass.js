@@ -31,31 +31,31 @@ export default class AppClass extends React.Component {
     // It's enough to know what index the "B" is at, to be able to calculate them.
     switch (index) {
       case 0:
-        return "(1,1)";
+        return "(1, 1)";
         break;
       case 1:
-        return "(2,1)";
+        return "(2, 1)";
         break;
       case 2:
-        return "(3,1)";
+        return "(3, 1)";
         break;
       case 3:
-        return "(1,2)";
+        return "(1, 2)";
         break;
       case 4:
-        return "(2,2)";
+        return "(2, 2)";
         break;
       case 5:
-        return "(3,2)";
+        return "(3, 2)";
         break;
       case 6:
-        return "(1,3)";
+        return "(1, 3)";
         break;
       case 7:
-        return "(2,3)";
+        return "(2, 3)";
         break;
       case 8:
-        return "(3,3)";
+        return "(3, 3)";
         break;
     }
   };
@@ -77,7 +77,9 @@ export default class AppClass extends React.Component {
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
     if (direction === "left") {
-      if (this.state.index - 1 >= 0) {
+      if (this.state.index === 3 || this.state.index === 6) {
+        this.setState({ ...this.state, message: "You can't go left" });
+      } else if (this.state.index - 1 >= 0) {
         this.setState({
           ...this.state,
           index: this.state.index - 1,
@@ -87,7 +89,9 @@ export default class AppClass extends React.Component {
         this.setState({ ...this.state, message: "You can't go left" });
       }
     } else if (direction === "right") {
-      if (this.state.index + 1 <= 8) {
+      if (this.state.index === 2 || this.state.index === 5) {
+        this.setState({ ...this.state, message: "You can't go right" });
+      } else if (this.state.index + 1 <= 8) {
         this.setState({
           ...this.state,
           index: this.state.index + 1,
@@ -140,16 +144,24 @@ export default class AppClass extends React.Component {
     evt.preventDefault();
     axios
       .post(url, {
-        x: `${getXYCord[1]}`,
-        y: `${getXYCord[3]}`,
+        x: `${Number(getXYCord[1])}`,
+        y: `${Number(getXYCord[4])}`,
         steps: `${this.state.steps}`,
         email: `${this.state.email}`,
       })
       .then((res) => {
-        console.log(res.data.message);
         this.setState({
           ...this.state,
           message: res.data.message,
+          email: "",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({
+          ...this.state,
+          message: err.response.data.message,
+          email: "",
         });
       });
   };
@@ -161,7 +173,9 @@ export default class AppClass extends React.Component {
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">Coordinates {this.getXYMessage()}</h3>
-          <h3 id="steps">You moved {this.state.steps} times</h3>
+          <h3 id="steps">
+            You moved {this.state.steps} time{this.state.steps === 1 ? "" : "s"}
+          </h3>
         </div>
         <div id="grid">
           {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
